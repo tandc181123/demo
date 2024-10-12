@@ -17,6 +17,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: '17'
+          distribution: 'temurin'  # 這裡指定 Java 分發版本
 
       - name: Build with Maven
         run: mvn clean package
@@ -27,6 +28,6 @@ jobs:
       - name: Push Docker image to Docker Hub
         run: |
           echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-          docker tag demo:latest secrets.DOCKER_USERNAME/demo:latest
-          docker push secrets.DOCKER_USERNAME/demo:latest
+          docker tag demo:latest ${{ secrets.DOCKER_USERNAME }}/demo:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/demo:latest
 
