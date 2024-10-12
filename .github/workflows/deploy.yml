@@ -1,0 +1,28 @@
+name: Deploy to Raspberry Pi
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Pull Docker image and run
+        run: |
+          ssh tanc181123@192.168.50.122 << 'EOF'
+            docker pull tandc181123/demo:latest
+            docker stop demo || true
+            docker rm demo || true
+            docker run -d --name demo -p 8080:8080 tandc181123/demo:latest
+          EOF
+
