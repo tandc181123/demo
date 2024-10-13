@@ -26,6 +26,6 @@ jobs:
           docker pull tandc181123/demo:latest   # 拉取 Docker 映像
           docker stop demo || true              # 停止當前運行的容器（如果有）
           docker rm demo || true                # 刪除容器（如果有）
-          docker run -d --name demo -p 8080:8080 tandc181123/demo:latest  # 運行新的容器
+          docker run -d --name demo -p 8080:8080 tandc181123/demo:latest
         EOF
 
