@@ -29,7 +29,7 @@ jobs:
           docker pull tandc181123/demo:latest
           docker stop demo || true
           docker rm demo || true
-          docker image  prune -f
+          docker system  prune -a -f
           docker run -d --name demo -p 8080:8080 tandc181123/demo:latest
         EOF
 
