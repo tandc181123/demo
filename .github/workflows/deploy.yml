@@ -26,10 +26,8 @@ jobs:
       run: |
         ssh tandc181123@192.168.50.122 << EOF
           docker pull tandc181123/demo:latest
-          if [ "$(docker images -q tandc181123/demo:latest)" != "$(docker ps -q --filter ancestor=tandc181123/demo:latest)" ]; then
-            docker stop demo || true
-            docker rm demo || true
-            docker run -d --name demo -p 8080:8080 tandc181123/demo:latest
-          fi
+          docker stop demo || true
+          docker rm demo || true
+          docker run -d --name demo -p 8080:8080 tandc181123/demo:latest
         EOF
 
