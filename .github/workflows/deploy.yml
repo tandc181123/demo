@@ -22,7 +22,7 @@ jobs:
     # Pull Docker image from Docker Hub and run container on Raspberry Pi
     - name: Pull Docker image and run container on Raspberry Pi
       run: |
-        ssh -o StrictHostKeyChecking=no tandc181123@192.168.50.122 << 'EOF'  # SSH 到 Raspberry Pi
+        ssh -vvv tandc181123@192.168.50.122 << 'EOF'  # SSH 到 Raspberry Pi
           docker pull tandc181123/demo:latest   # 拉取 Docker 映像
           docker stop demo || true              # 停止當前運行的容器（如果有）
           docker rm demo || true                # 刪除容器（如果有）
