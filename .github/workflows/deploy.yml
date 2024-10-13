@@ -20,7 +20,7 @@ jobs:
 
       - name: Pull Docker image and run
         run: |
-          ssh -o StrictHostKeyChecking=no tandc181123@192.168.50.122 << 'EOF'
+            ssh tandc181123@192.168.50.122 << 'EOF'
             docker pull tandc181123/demo:latest
             docker stop demo || true
             docker rm demo || true
