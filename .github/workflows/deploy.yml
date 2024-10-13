@@ -7,25 +7,29 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    # 設置 SSH 代理，並添加私鑰
+    - name: Add Raspberry Pi to known_hosts
+      run: |
+        ssh-keyscan -H 192.168.50.122 >> ~/.ssh/known_hosts
+
     - name: Setup SSH agent
       uses: webfactory/ssh-agent@v0.5.3
       with:
-        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}  # 使用你存儲在 GitHub Secrets 中的 SSH 私鑰
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-    # Pull Docker image from Docker Hub and run container on Raspberry Pi
     - name: Pull Docker image and run container on Raspberry Pi
       run: |
-        ssh -vvv tandc181123@192.168.50.122 << 'EOF'  # SSH 到 Raspberry Pi
-          docker pull tandc181123/demo:latest   # 拉取 Docker 映像
-          docker stop demo || true              # 停止當前運行的容器（如果有）
-          docker rm demo || true                # 刪除容器（如果有）
-          docker run -d --name demo -p 8080:8080 tandc181123/demo:latest
+        ssh tandc181123@192.168.50.122 << EOF
+          docker pull tandc181123/demo:latest
+          if [ "$(docker images -q tandc181123/demo:latest)" != "$(docker ps -q --filter ancestor=tandc181123/demo:latest)" ]; then
+            docker stop demo || true
+            docker rm demo || true
+            docker run -d --name demo -p 8080:8080 tandc181123/demo:latest
+          fi
         EOF
 
