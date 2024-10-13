@@ -10,20 +10,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
-      - name: Set up SSH agent
-        uses: webfactory/ssh-agent@v0.5.3
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+    # 設置 SSH 代理，並添加私鑰
+    - name: Setup SSH agent
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}  # 使用你存儲在 GitHub Secrets 中的 SSH 私鑰
 
-      - name: Pull Docker image and run
-        run: |
-          ssh -o StrictHostKeyChecking=no tandc181123@192.168.50.122 << 'EOF'
-            docker pull tandc181123/demo:latest
-            docker stop demo || true
-            docker rm demo || true
-            docker run -d --name demo -p 8080:8080 tandc181123/demo:latest
-          EOF
+    # Pull Docker image from Docker Hub and run container on Raspberry Pi
+    - name: Pull Docker image and run container on Raspberry Pi
+      run: |
+        ssh -o StrictHostKeyChecking=no tandc181123@192.168.50.122 << 'EOF'  # SSH 到 Raspberry Pi
+          docker pull tandc181123/demo:latest   # 拉取 Docker 映像
+          docker stop demo || true              # 停止當前運行的容器（如果有）
+          docker rm demo || true                # 刪除容器（如果有）
+          docker run -d --name demo -p 8080:8080 tandc181123/demo:latest  # 運行新的容器
+        EOF
 
